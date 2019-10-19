@@ -1,35 +1,43 @@
 require 'securerandom'
 
 class SessionsController < ApplicationController
-  include Common
 
   # 要するにログイン
   def create
     json_request = JSON.parse(request.body.read)
 
-    {
+    json = {
       "name" => json_request["name"],
       "passwd" => json_request["passwd"]
-    }.each do |key, value|
-      validate_special_or_nil(key, value)
+    }
+
+    begin
+      validate_special_or_nil(json)
+
+      user = User.find_by(name: json_request["name"])
+
+      if user.nil?
+        raise GeneralInconsistencyError.new(status: PRECONDITION_FAILED, message: "IDかパスワードが違う")
+      end
+
+      pw_hash = Digest::SHA1.hexdigest(json_request["passwd"] + user.salt)
+
+      if pw_hash != user.passwd
+        raise GeneralInconsistencyError.new(status: PRECONDITION_FAILED, message: "IDかパスワードが違う")
+      end
+    rescue => e
+      errorjson = {"ErrorMessage" => e.message}
+      return render :json => errorjson, :status => e.status      
     end
 
-    user = User.where(name: json_request["name"]).limit(1)
+    create_session(user.id)
+    
+    set_session_variable({name: user.name})
 
-    if user.count === 0
-      raise "IDかパスワードが違う"
-    end
 
-    pw_hash = Digest::SHA1.hexdigest(json_request["passwd"] + user.first.salt)
-
-    if pw_hash != user.first.passwd
-      raise "IDかパスワードが違う"
-    end
-
-    session[:id] = user.first.id
 
     json = {
-      "name" => user.first.name
+      "name" => user.name
     }
 
     render :json => json, :status => CREATED

@@ -1,13 +1,20 @@
 require_relative '../exceptions/Error_general_inconsistency'
 
 class ApplicationController < ActionController::Base
+    include SessionsHelper
 
-
+    # ステータスコード管理
+    OK = 200
     CREATED = 201
     RESET_CONTENT = 205
     NOT_FOUND = 404
     PRECONDITION_FAILED = 412
-    
+
+    def validate_special_or_nil(hash)
+        validate_nil(hash)
+        validate_special_character(hash)
+    end
+
 
     def validate_nil(hash)
         hash.each do |key, value|
@@ -15,11 +22,6 @@ class ApplicationController < ActionController::Base
                 raise GeneralInconsistencyError.new(status: PRECONDITION_FAILED, message: key + "がnilだよ")
             end
         end
-    end
-
-    def validate_special_or_nil(hash)
-        validate_nil(hash)
-        validate_special_character(hash)
     end
 
     def validate_special_character(hash)
@@ -39,6 +41,5 @@ class ApplicationController < ActionController::Base
         end
     end
 
-
-    protect_from_forgery()
+    protect_from_forgery with: :null_session
 end

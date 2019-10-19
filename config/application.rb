@@ -17,5 +17,21 @@ module Rubyquest
     # the framework and any gems in your application.
   
     config.autoload_paths += %W(#{config.root}/lib)
+
+
+    #config.api_only = true
+    #config.middleware.use ActionDispatch::Cookies
+    #config.middleware.use ActionDispatch::Session::CookieStore, key: '_coookie_name', expire_after: 30.days
+  end
+end
+
+
+
+module RedisRailsSample
+  class Application < Rails::Application
+    # ...
+
+    # これを追記
+    config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.minutes }
   end
 end
