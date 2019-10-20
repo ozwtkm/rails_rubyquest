@@ -1,14 +1,14 @@
 class UsersController < ApplicationController
   def index
-    user_id = get_session()
-
-    user = User.find_by(id: user_id)
-    if user.nil?
+    unless @session.is_logined?()
       return render :json => {"ErrorMessage":"ログインしろボケ"}, status: NOT_FOUND
     end
 
+    user = User.find_by(id: @session.variables[:user_id])
+
     render :json => {"username": user.name}, :status => OK
   end
+
 
   def create
     json_request = JSON.parse(request.body.read)

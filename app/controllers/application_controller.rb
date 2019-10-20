@@ -2,6 +2,7 @@ require_relative '../exceptions/Error_general_inconsistency'
 
 class ApplicationController < ActionController::Base
     include SessionsHelper
+    before_action :set_session
 
     # ステータスコード管理
     OK = 200
@@ -10,6 +11,8 @@ class ApplicationController < ActionController::Base
     NOT_FOUND = 404
     PRECONDITION_FAILED = 412
 
+
+    # ↓　validaterhelperにあとで引っ越し
     def validate_special_or_nil(hash)
         validate_nil(hash)
         validate_special_character(hash)

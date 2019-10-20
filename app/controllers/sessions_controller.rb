@@ -30,10 +30,8 @@ class SessionsController < ApplicationController
       return render :json => errorjson, :status => e.status      
     end
 
-    create_session(user.id)
-    
-    set_session_variable({name: user.name})
-
+    @session.login(user.id)
+    set_cookie()
 
 
     json = {
@@ -43,3 +41,4 @@ class SessionsController < ApplicationController
     render :json => json, :status => CREATED
   end
 end
+

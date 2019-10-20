@@ -1,4 +1,6 @@
 RedisRailsSample::Application.config.session_store :redis_store, {
+  
+=begin
   servers: [
     {
       host: "localhost",
@@ -9,4 +11,6 @@ RedisRailsSample::Application.config.session_store :redis_store, {
   ],
   key: "XXX_rubyquest_session",
   expire_after: 1.week
+=end
+
 }
