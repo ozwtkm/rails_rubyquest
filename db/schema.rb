@@ -10,7 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_091748) do
+ActiveRecord::Schema.define(version: 2019_09_13_050844) do
+
+  create_table "monsters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name", limit: 190, null: false
+    t.integer "hp", null: false
+    t.integer "atk", null: false
+    t.integer "def", null: false
+    t.integer "exp", null: false
+    t.integer "money", null: false
+    t.integer "img_id"
+    t.integer "rarity", null: false
+    t.integer "speed", null: false
+    t.integer "mp", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_monsters_on_name", unique: true
+  end
+
+  create_table "user_monsters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "monster_id", null: false
+    t.index ["user_id"], name: "index_user_monsters_on_user_id"
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", limit: 190, null: false
@@ -19,4 +41,5 @@ ActiveRecord::Schema.define(version: 2019_09_03_091748) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  add_foreign_key "user_monsters", "users"
 end
