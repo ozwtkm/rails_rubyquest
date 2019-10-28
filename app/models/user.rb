@@ -7,7 +7,9 @@ class User < ApplicationRecord
         pw_hash = Digest::SHA1.hexdigest(passwd+salt)
 
         user = User.new(name: name, salt: salt, passwd: pw_hash)
-        user.save() #nameの重複はここでエラー吐かれる
+        user.save!() #nameの重複はここでエラー吐かれる
+
+        return user
     end
 
 

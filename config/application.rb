@@ -25,8 +25,7 @@ module Rubyquest
   end
 end
 
-
-
+# これは要る
 module RedisRailsSample
   class Application < Rails::Application
     # ...
@@ -35,3 +34,4 @@ module RedisRailsSample
     config.cache_store = :redis_store, "redis://localhost:6379/0/cache", { expires_in: 90.minutes }
   end
 end
+

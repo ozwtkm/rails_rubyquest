@@ -46,7 +46,6 @@ module ValidationHelper
     end
 
 
-
     def validate_input_GET()
         # GETメソッド時の入力値検証処理。
         # オーバーライドして使う

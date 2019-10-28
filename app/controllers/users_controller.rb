@@ -16,7 +16,9 @@ class UsersController < ApplicationController
       return render :json => errorjson, :status => CONFLICT
     end
 
-    render :json => user, :status => CREATED
+    Wallet.init(user.id)
+
+    render :status => CREATED
   end
 
 

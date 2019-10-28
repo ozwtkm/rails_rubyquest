@@ -156,7 +156,7 @@ var do_update_party = function(){
 
 
 var get_wallet = function(){
-	$.getJSON("/wallet", append_wallet);
+	$.getJSON("/wallets", append_wallet);
 }
 
 

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :wallets, only: [:index]
   resources :users, only: [:index, :create]
   resources :sessions, only: [:index, :create]
 

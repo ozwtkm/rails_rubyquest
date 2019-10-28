@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_13_050844) do
+ActiveRecord::Schema.define(version: 2019_09_13_203808) do
 
   create_table "monsters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", limit: 190, null: false
@@ -41,5 +41,15 @@ ActiveRecord::Schema.define(version: 2019_09_13_050844) do
     t.index ["name"], name: "index_users_on_name", unique: true
   end
 
+  create_table "wallets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.integer "gem", null: false
+    t.integer "money", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_wallets_on_user_id"
+  end
+
   add_foreign_key "user_monsters", "users"
+  add_foreign_key "wallets", "users"
 end
