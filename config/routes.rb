@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :create]
   resources :sessions, only: [:index, :create]
 
+  get 'items/:offset', to: 'items#index'
+  
   get 'monsters/:offset', to: 'monsters#index'
   #resources :monsters, only: [:index]
   

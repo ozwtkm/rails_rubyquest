@@ -6,7 +6,7 @@ class CreateMonsters < ActiveRecord::Migration[6.0]
       t.integer :atk, null: false
       t.integer :def, null: false
       t.integer :exp, null: false
-      t.integer :money, null: falses
+      t.integer :money, null: false
       t.integer :img_id
       t.integer :rarity, null: false
       t.integer :speed, null: false
@@ -16,5 +16,6 @@ class CreateMonsters < ActiveRecord::Migration[6.0]
     end
   end
 end
+
 
 

@@ -83,7 +83,7 @@ var get_monsters = function(offset){
 
 
 var get_items = function(offset){
-	$.getJSON("/item/" + offset, append_items_list);
+	$.getJSON("/items/" + offset, append_items_list);
 	
 	var next = String(Number(offset) + 10);
 	var back = String(Number(offset) - 10);

@@ -17,6 +17,7 @@ class UsersController < ApplicationController
     end
 
     Wallet.init(user.id)
+    Item.init(user.id)
 
     render :status => CREATED
   end
