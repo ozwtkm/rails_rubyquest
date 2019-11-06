@@ -67,3 +67,5 @@ group :development, :test do
 end
 
 gem 'redis-rails'
+
+gem 'mongoid'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_14_211412) do
+ActiveRecord::Schema.define(version: 2019_09_15_213437) do
 
   create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(version: 2019_09_14_211412) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_monsters_on_name", unique: true
+  end
+
+  create_table "parties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "user_monster_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_parties_on_user_id"
+    t.index ["user_monster_id"], name: "index_parties_on_user_monster_id"
   end
 
   create_table "user_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -68,6 +77,8 @@ ActiveRecord::Schema.define(version: 2019_09_14_211412) do
     t.index ["user_id"], name: "index_wallets_on_user_id"
   end
 
+  add_foreign_key "parties", "user_monsters"
+  add_foreign_key "parties", "users"
   add_foreign_key "user_items", "users"
   add_foreign_key "user_monsters", "users"
   add_foreign_key "wallets", "users"
