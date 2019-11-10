@@ -8,7 +8,7 @@ function append_user_info(data){
  }
 
 var get_parties = function(){
-    $.getJSON("/party", append_parties_list);
+    $.getJSON("/parties", append_parties_list);
 }
 
 function append_parties_list(data){

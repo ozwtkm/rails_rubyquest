@@ -18,6 +18,8 @@ class UsersController < ApplicationController
 
     Wallet.init(user.id)
     Item.init(user.id)
+    inital_monster = Monster.init(user.id)
+    Party.init(user.id, inital_monster)
 
     render :status => CREATED
   end

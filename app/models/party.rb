@@ -1,21 +1,20 @@
 class Party < ApplicationRecord
     MONSTER_LIMIT = 1 # 1パーティあたりのモンスター数上限。今は1
+    NUMBER_OF_PARTIES_PER_USER = 3
 
- attr_reader :id, :monster_model
- attr_accessor :user_monster_id
+ attr_accessor :user_monster_id, :id, :monster_model
 
  #after_initialize -> {set_partyinfo(party_infok)}
 
- def set_partyinfo(party_info)
-    puts party_info
- end
 
  def initialize(party_info)
     super
-    
-     @id = party_info["id"]
-     @user_monster_id = party_info["user_monster_id"] #現仕様では1パーティにつき一体だけ
-     @monster_model = party_info["monster_model"]
+
+    self[:id] = party_info["id"] unless party_info["id"].nil?
+    self[:user_id] = party_info["user_id"]
+    self[:user_monster_id] = party_info["user_monster_id"] #現仕様では1パーティにつき一体だけ
+
+    @monster_model = party_info["monster_model"]
  end
 
 # To do 真面目に綺麗に書く
@@ -65,14 +64,13 @@ end
 
 tmp_party_list.each do |k1, v1|
     v1.each do |k2, v2|
-        binding.pry
-
         v1[k2] = tmp_monster_relation[v2.monster_id].clone()
     end
 end
 
 parties_for_return = {}
 party_info = {}
+party_info["user_id"] = user_id
 
 # ↓　1パーティ1体という仕様じゃなくなったら改造が必要
 tmp_party_list.each do |k1, v1|
@@ -89,12 +87,23 @@ return parties_for_return
 end
 
 # ユーザ新規登録時のみ叩かれる
-def self.init(user_id, possession_monster_id)
- sql_transaction = SQL_transaction.instance.sql
+def self.init(user_id, user_monster_id)
+    array = []
 
- statement = sql_transaction.prepare("insert into party(user_id, possession_monster_id) values(?,?),(?,?),(?,?)")
- result = statement.execute(user_id,possession_monster_id,user_id,possession_monster_id,user_id,possession_monster_id)
- statement.close
+    party_info = {}
+    party_info["user_id"] = user_id
+    party_info["user_monster_id"] = user_monster_id
+    NUMBER_OF_PARTIES_PER_USER.times do |row|
+        array << Party.new(party_info)
+    end
+
+    # ⤵︎本当はバルクインサートしたいが、id(オートインクリメント分)を除外してinsertするやり方わからん
+    # Party.import(array)
+
+    array.each do |row|
+        party = Party.new(party_info)
+        party.save()
+    end
 end
 
 
@@ -119,13 +128,6 @@ def set(possession_monster_id)
  statement2.close()
 end
 
-# init時に3枠が確保され、insertは使わずupdateだけが使われる仕様
-def save()
- sql_transaction = SQL_transaction.instance.sql
 
- statement = sql_transaction.prepare("update party set possession_monster_id = ? where id = ?")
- statement.execute(@possession_monster_id, @id)
- statement.close()
-end
 
 end
