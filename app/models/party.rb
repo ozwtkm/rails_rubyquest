@@ -107,25 +107,14 @@ def self.init(user_id, user_monster_id)
 end
 
 
-def set(possession_monster_id)
- sql_transaction = SQL_transaction.instance.sql
- sql_master = SQL_master.instance.sql
+def set(user_monster_id)
+    if User_monster.find(user_monster_id).count === 0
+        raise "それpartyにできない"
+    end
 
- statement1 = sql_transaction.prepare("select monster_id from user_monster where id = ? and user_id = ? limit 1")
- result1 = statement1.execute(possession_monster_id, @user_id)
-
- Validator.validate_SQL_error(result1.count, is_multi_line: false)
-
- statement2 = sql_master.prepare("select * from monsters where id = ? limit 1")
- result2 = statement2.execute(result1.first()["monster_id"])
-
- Validator.validate_SQL_error(result2.count, is_multi_line: false)
-
- @monster_model = Monster.new(result2.first())
- @possession_monster_id = possession_monster_id
-
- statement1.close()
- statement2.close()
+    self[:user_monster_id] = user_monster_id
+    
+    save()
 end
 
 

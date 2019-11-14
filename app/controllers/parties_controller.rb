@@ -27,4 +27,38 @@ def index
     render :json => party_json, :status => OK
 end
 
+
+# ストロングパラメータ使おうとすると
+#  {"{\"users\":{\"hoge\":333}"=>nil, "id"=>"1"}みたいになってうまくjsonが取れない。。
+def update
+    user = User.find_by(id: @session.variables[:user_id])
+
+    party = Party.get(user.id)
+
+    if party[params[:id]].nil?
+        raise GeneralInconsistencyError.new(status: 412, message: "不整合起きた")
+    end
+
+    party[params[:id]].set(@json["user_monster_id"])
+
+    render :status => CREATED
+end
+
+
+def validate_input_PUT()
+    json_request = JSON.parse(request.body.read)
+
+    @json = {
+      "user_monster_id" => json_request["user_monster_id"]
+    }
+
+    validate_not_Naturalnumber(@json)
+end
+
+
+def hoges_params
+    JSON.parse(params).require(:hoge).permit(:name,:content)
+end
+
+
 end
