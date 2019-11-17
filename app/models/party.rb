@@ -27,17 +27,19 @@ tmp_monster = nil
 tmp_party_list = {}
 
 parties = Party.where(user_id: user_id).limit(3)
+
 #仕様としてpartyの数は3としてる。
-user_monster_ids = []
+user_monster= []
+
 parties.each do |row|
     tmp_party_list[row.attributes["id"]] = {
         row.attributes["user_monster_id"] => tmp_monster
     }
 
-    user_monster_ids << row.attributes["user_monster_id"]
+    # あまりやりたくないが、一発で抜けてかつ軽量なSQLが思う位浮かばないのでpartyごとにselect
+    user_monster << User_monster.where(id: row.attributes["user_monster_id"]).limit(1)
 end
 
-user_monster = User_monster.where(id: user_monster_ids).limit(3)
 
 
 tmp_party_list.each.with_index do |(k1,v1), i|
@@ -46,25 +48,26 @@ tmp_party_list.each.with_index do |(k1,v1), i|
    end
 end
 
+
 monster_ids = []
 monster_ids = user_monster.map do |row|
-    row.monster_id
+    row[0].monster_id #パーティの仕様が変わったらここはeachにする
 end
+
 
 monsters = Monster.where(id: monster_ids)
 
 #monster_ids = monster_ids.group_by(&:itself).map{ |key, value| [key, value.count] }.to_h
 # {5 => 1, 3 => 2}の形にする（重複がある時の下記ループの生合成保証ため）
 
-
 tmp_monster_relation = {}
 monsters.each do |row|
-        tmp_monster_relation[row.attributes["id"]] = row
+    tmp_monster_relation[row.attributes["id"]] = row
 end
 
 tmp_party_list.each do |k1, v1|
     v1.each do |k2, v2|
-        v1[k2] = tmp_monster_relation[v2.monster_id].clone()
+        v1[k2] = tmp_monster_relation[v2[0].monster_id].clone()
     end
 end
 
@@ -79,12 +82,14 @@ tmp_party_list.each do |k1, v1|
         party_info["user_monster_id"] = k2
         party_info["monster_model"] = v2
     end
+    
     parties_for_return[k1] = Party.new(party_info)
 end
 
 return parties_for_return
 
 end
+
 
 # ユーザ新規登録時のみ叩かれる
 def self.init(user_id, user_monster_id)
