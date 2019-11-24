@@ -22,8 +22,18 @@ module Rubyquest
     #config.api_only = true
     #config.middleware.use ActionDispatch::Cookies
     #config.middleware.use ActionDispatch::Session::CookieStore, key: '_coookie_name', expire_after: 30.days
+  
+  
+  # mongoではなくSQLをデフォルトにする
+config.generators do |g|
+  g.orm :active_record
+end
+  
   end
 end
+
+
+
 
 # これは要る
 module RedisRailsSample
